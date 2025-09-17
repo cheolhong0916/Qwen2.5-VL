@@ -61,6 +61,7 @@ def run_inference(args):
         # line = data.iloc[i].to_dict()
         line = data.iloc[i]
         index = line['index']
+        print(line)
         
         # Convert line to dict and ensure all values are JSON serializable
         line_dict = line.to_dict()
@@ -70,8 +71,10 @@ def run_inference(args):
             elif isinstance(v, np.floating):
                 line_dict[k] = float(v)
         
+        print(line_dict)
         # Generate response using HuggingFace
         messages = model.build_prompt(line, args.dataset)
+        print(messages)
         
         # Add CoT prompt if enabled
         if args.use_cot and len(messages) > 0 and messages[-1]['type'] == 'text':

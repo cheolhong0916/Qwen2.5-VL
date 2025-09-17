@@ -130,6 +130,28 @@ def train(attn_implementation="flash_attention_2"):
         replace_qwen2_vl_attention_class()
     model.config.use_cache = False
 
+
+    # if training_args.bf16 and attn_implementation == "flash_attention_2":
+
+    #     def fix_rotary_buffers(module):
+    #         for name, buffer in module.named_buffers():
+    #             if ('cos_cached' in name or 'sin_cached' in name or 
+    #                 'cos' in name or 'sin' in name) and buffer.dtype == torch.float32:
+    #                 buffer.data = buffer.data.to(torch.bfloat16)
+        
+    #     for module in model.modules():
+    #         fix_rotary_buffers(module)
+
+
+    # if training_args.bf16 and attn_implementation == "flash_attention_2":
+
+    #     for name, buffer in model.named_buffers():
+    #         if buffer.dtype == torch.float32:
+    #             buffer.data = buffer.data.to(torch.bfloat16)
+
+
+
+
     if training_args.gradient_checkpointing:
         if hasattr(model, "enable_input_require_grads"):
             model.enable_input_require_grads()
@@ -161,6 +183,29 @@ def train(attn_implementation="flash_attention_2"):
         model=model, processing_class=tokenizer, args=training_args, **data_module
     )
 
+
+
+
+
+    if training_args.bf16 and attn_implementation == "flash_attention_2":
+        print("Fixing rotary embedding dtype for Flash Attention...")
+        def fix_rotary_dtype_recursive(module):
+
+            for name, child in module.named_children():
+                if hasattr(child, 'rotary_emb') or 'rotary' in name.lower():
+                    for buffer_name, buffer in child.named_buffers():
+                        if buffer.dtype == torch.float32:
+                            print(f"Converting {name}.{buffer_name} from float32 to bfloat16")
+                            buffer.data = buffer.data.to(torch.bfloat16)
+                fix_rotary_dtype_recursive(child)
+        
+        fix_rotary_dtype_recursive(model)
+
+
+
+
+
+
     if list(pathlib.Path(training_args.output_dir).glob("checkpoint-*")):
         logging.info("checkpoint found, resume training")
         trainer.train(resume_from_checkpoint=True)
@@ -175,4 +220,5 @@ def train(attn_implementation="flash_attention_2"):
 
 
 if __name__ == "__main__":
-    train(attn_implementation="flash_attention_2")
+    # train(attn_implementation="flash_attention_2")
+        train(attn_implementation="eager")

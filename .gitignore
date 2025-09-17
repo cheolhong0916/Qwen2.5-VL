@@ -8,3 +8,7 @@ wheels/
 
 # venv
 .venv
+
+output/
+wandb/
+core

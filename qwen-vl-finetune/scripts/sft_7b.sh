@@ -4,12 +4,10 @@
 MASTER_ADDR=${MASTER_ADDR:-"127.0.0.1"}
 MASTER_PORT=${MASTER_PORT:-$(shuf -i 20001-29999 -n 1)}
 NNODES=${WORLD_SIZE:-1}
+NPROC_PER_NODE=$(nvidia-smi --list-gpus | wc -l)
 
 # DeepSpeed configuration
 deepspeed=./scripts/zero3.json
-
-# Model configuration
-llm=Qwen/Qwen2.5-VL-7B-Instruct  # Using HuggingFace model ID
 
 # Training hyperparameters
 lr=2e-7
@@ -20,18 +18,39 @@ grad_accum_steps=4
 entry_file=qwenvl/train/train_qwen.py
 
 # Dataset configuration (replace with public dataset names)
-datasets=public_dataset1,public_dataset2
+# datasets=public_dataset1,public_dataset2
+# datasets=prism
+# datasets=spatial457_all
+datasets=synthetic
+# datasets=sat30k
+# datasets=sat10k_spatial10k
+
+
+
+
+
+
+# Model configuration
+llm=Qwen/Qwen2.5-VL-7B-Instruct  # Using HuggingFace model ID
+# llm=/data/shared/Qwen/Qwen2.5-VL/qwen-vl-finetune/output/image_prefix_${datasets}
+# llm=/data/shared/Qwen/Qwen2.5-VL/qwen-vl-finetune/output/image_prefix_pixmo_points
+# llm=/data/shared/Qwen/Qwen2.5-VL/qwen-vl-finetune/output/image_prefix_spatial457_2D_tasks
 
 # Output configuration
-run_name="qwen2vl-baseline"
-output_dir=./output
+# run_name="qwen2.5vl-baseline-pixmo-points-${datasets}"
+# output_dir=./output/image_prefix_pixmo_points_${datasets}
+# run_name="qwen2.5vl-baseline-spatial457-2D-tasks"
+# output_dir=./output/image_prefix_spatial457_2D_tasks
+run_name="qwen2.5vl-7B-baseline-${datasets}"
+output_dir=./output/${run_name}
+
 
 # Training arguments
 args="
     --deepspeed ${deepspeed} \
     --model_name_or_path "${llm}" \
     --dataset_use ${datasets} \
-    --data_flatten True \
+    --data_flatten False \
     --tune_mm_vision False \
     --tune_mm_mlp True \
     --tune_mm_llm True \
