@@ -79,6 +79,27 @@ _3D = {
 }
 
 
+# w/o RoboSpatial
+_3D_woRS = {
+    "annotation_path": "../../Fine-tuning-data/woRS/3d_PRISM_Spatial457_SAT_SPAR-7M_80.0k.json",
+    "data_path": "../../",
+}
+
+REAL_woRS = {
+    "annotation_path": "../../Fine-tuning-data/woRS/real_SPAR-7M_80.0k.json",
+    "data_path": "../../",
+}
+
+REASONING_woRS = {
+    "annotation_path": "../../Fine-tuning-data/woRS/reasoning_PRISM_SPAR-7M_Spatial457_SAT_80.0k.json",
+    "data_path": "../../",
+}
+
+STATIC_woRS = {
+    "annotation_path": "../../Fine-tuning-data/woRS/static_PRISM_Spatial457_SAT_SPAR-7M_80.0k.json",
+    "data_path": "../../",
+}
+
 
 # Fine-tuning-data + PIXMO
 SYNTHETIC_PIXMO = {
@@ -179,6 +200,11 @@ data_dict = {
     "reasoning": REASONING,
     "2d": _2D,
     "3d": _3D,
+
+    "3d_woRS": _3D_woRS,
+    "real_woRS": REAL_woRS,
+    "reasoning_woRS": REASONING_woRS,
+    "static_woRS": STATIC_woRS,
 
     "synthetic_pixmo": SYNTHETIC_PIXMO,
     "real_pixmo": REAL_PIXMO,

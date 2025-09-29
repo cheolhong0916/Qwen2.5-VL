@@ -136,7 +136,10 @@ run_training() {
 # Define the datasets to train on, in order
 
 # Fine tuning with Fine-tuning-data
-DATASET_LIST=("real" "static" "reasoning" "2d" "3d" "synthetic" "dynamic" "perception")
+# DATASET_LIST=("real" "static" "reasoning" "2d" "3d" "synthetic" "dynamic" "perception")
+
+# Fine tuning with Fine-tuning-data w/o RoboSpatial
+DATASET_LIST=("real_woRS" "reasoning_woRS" "3d_woRS" "static_woRS")
 
 # Fine tuning with Fine-tuning-data + PIXMO (point predictinon dataset)
 # DATASET_LIST=("synthetic_pixmo" "real_pixmo" "static_pixmo" "dynamic_pixmo" "perception_pixmo" "reasoning_pixmo" "2d_pixmo" "3d_pixmo")
